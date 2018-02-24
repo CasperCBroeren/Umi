@@ -1,0 +1,17 @@
+@model IList<ApplicationUri>
+<!DOCTYPE html>
+<html><head><title>Umi</title></head><body>
+<h1>Umi status page</h1>
+<p>
+    These application Uri's are currently present.
+</p>
+<ul>
+    @foreach(var item in Model)
+    {
+        <li>
+            @item.Uri
+            <span>Test</span>
+        </li>
+    }
+</ul>
+</body></html>
