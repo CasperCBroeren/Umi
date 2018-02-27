@@ -2,7 +2,8 @@
 {
     public class UmiMiddlewareOptions
     {
-        public string LocatorUrl { get; set; } = "UMI";
+        private string locatorUrl = "/umi";
+        public string LocatorUrl { get { return locatorUrl; } set { locatorUrl = (value.StartsWith("/") ? value : "/" + value); } }
         public bool ScaffoldWfc { get; set; } = false;
     }
 }

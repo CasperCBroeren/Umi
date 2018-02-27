@@ -28,13 +28,17 @@ namespace Umi.Core
  
         public ViewRenderService(IRazorViewEngine razorViewEngine,
             ITempDataProvider tempDataProvider,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IHttpContextAccessor httpContextAccessor)
         {
             _razorViewEngine = razorViewEngine;
             _tempDataProvider = tempDataProvider;
             _serviceProvider = serviceProvider;
+            this.httpContextAccessor = httpContextAccessor;
         }
- 
+
+        public IHttpContextAccessor httpContextAccessor { get; }
+
         public async Task<string> RenderToStringAsync(string viewName, object model)
         {
             var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
@@ -42,26 +46,20 @@ namespace Umi.Core
  
             using (var sw = new StringWriter())
             {
-                var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
- 
+                var viewResult = _razorViewEngine.GetView("~/", viewName, false);
+
+
                 if (viewResult.View == null)
                 {
                     throw new ArgumentNullException($"{viewName} does not match any available view");
                 }
- 
-                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+  
+                var viewContext = new ViewContext()
                 {
-                    Model = model
+                    HttpContext = httpContextAccessor.HttpContext ?? new DefaultHttpContext { RequestServices = _serviceProvider },
+                    ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) { Model = model },
+                    Writer = sw
                 };
- 
-                var viewContext = new ViewContext(
-                    actionContext,
-                    viewResult.View,
-                    viewDictionary,
-                    new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
-                    sw,
-                    new HtmlHelperOptions()
-                );
  
                 await viewResult.View.RenderAsync(viewContext);
                 return sw.ToString();
