@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
- 
- /*
-    This solution is copy pasted from; https://ppolyzos.com/2016/09/09/asp-net-core-render-view-to-string/
+
+/*
+   This solution is copy pasted from; https://long2know.com/2017/08/rendering-and-emailing-embedded-razor-views-with-net-core/
 */
 namespace Umi.Core
 {
