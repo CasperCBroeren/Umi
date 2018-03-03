@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Umi.Core
@@ -19,12 +21,12 @@ namespace Umi.Core
         private readonly IRazorViewEngine razorViewEngine;
         private Stream template;
 
-        public UmiMiddleware(RequestDelegate next, UmiMiddlewareOptions options, 
+        public UmiMiddleware(RequestDelegate next, UmiMiddlewareOptions options,
             IViewRenderService viewRenderService, ITempDataProvider tempDataProvider, IRazorViewEngine razorViewEngine)
         {
             this.next = next;
             this.options = options;
-            this.viewRenderService = viewRenderService; 
+            this.viewRenderService = viewRenderService;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -32,10 +34,28 @@ namespace Umi.Core
             var url = httpContext.Request.Path;
             if (url.StartsWithSegments(options.LocatorUrl))
             {
+                if (IsJsonRequest(httpContext))
+                {
+                    httpContext.Response.ContentType = "application/json";
+                    // worst json serialiser ever
+                    await httpContext.Response.WriteAsync($@"{{ ""urls"": [{string.Join(",", EndpointManager.All().Select(x=> $@"{{ ""uri"": ""{x.Uri}""}}"))}]}}"); 
+                }
+                else if (url.StartsWithSegments(options.LocatorAssetUrl))
+                {
+                    var assetName = url.ToString().Replace($"{options.LocatorAssetUrl}/", string.Empty);
 
-                var content = await this.viewRenderService.RenderToStringAsync("~/views/UmiStatus.cshtml", EndpointManager.All());
+                    using (var assetStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"Umi.Core.assets.{assetName}"))
+                    {
+                        await assetStream.CopyToAsync(httpContext.Response.Body);
+                    }
+
+
+                }
+                else
+                {
+                    var content = await this.viewRenderService.RenderToStringAsync("~/views/UmiStatus.cshtml", EndpointManager.All());
                     await httpContext.Response.WriteAsync(content);
-                
+                }
 
             }
             else
@@ -44,7 +64,12 @@ namespace Umi.Core
             }
         }
 
+        private static bool IsJsonRequest(HttpContext httpContext)
+        {
+            return httpContext.Request.Headers["accept"] == "application/json" ||
+                httpContext.Request.Headers["accept"] == "text/javascript";
 
+        }
     }
 
     public static class UmiMiddlewareExtentions

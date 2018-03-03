@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\logoUmi.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="assets\logoUmi.png" />
     <EmbeddedResource Include="views\UmiStatus.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <Generator></Generator>
