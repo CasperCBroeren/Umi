@@ -19,7 +19,7 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             var endpoint3 = "https://www.googleapis.com/youtube/v3/activities".RegisterAsEndpoint();
-            var endpoint2 = "https://www.googleapis.com/youtube/v2/activities".RegisterAsEndpoint();
+            var endpoint2 = "https://api.coinmarketcap.com/v1/ticker/".RegisterAsEndpoint();
             services.AddMvc();
             services.AddUmi();
         }

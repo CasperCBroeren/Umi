@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Umi.Core
 {
@@ -10,7 +11,7 @@ namespace Umi.Core
 
         public static bool RegisterEndpoint(Endpoint newItem)
         {
-            if (!points.Exists(x=> x.Equals(newItem)))
+            if (!points.Exists(x => x.Equals(newItem)))
             {
                 points.Add(newItem);
                 return true;
@@ -18,6 +19,13 @@ namespace Umi.Core
             return false;
         }
 
-        public static IList<Endpoint> All() => points;
+        public static async Task<IList<Endpoint>> All()
+        {
+            foreach (var item in points)
+            {
+                await item.DoTest();
+            }
+            return points;
+        }
     }
 }

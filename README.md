@@ -1,4 +1,4 @@
-![alt Umi logo](https://raw.githubusercontent.com/CasperCBroeren/Umi/master/Umi.Core/assets/logoUmi.png)
+﻿![alt Umi logo](https://raw.githubusercontent.com/CasperCBroeren/Umi/master/Umi.Core/assets/logoUmi.png)
 
 Because in application development your collection of urls can feel like a sea of Uri's which are not easily testable, I invented Umi.ApplicationUri.
 
@@ -11,6 +11,6 @@ Umi is a Japanese girl name, meaning sea ;)
 
 Roadmap
 - ✓ Get overview page to work in Core (html and json)
-- Test method
+- ✓ Test method
 - Scaffold Wfc
 - .Net Standard variant
