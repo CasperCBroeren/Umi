@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Umi.Core
 {
@@ -20,8 +22,29 @@ namespace Umi.Core
             }
         }
 
+        public Uri Uri { get; set; }
+
+        public async Task DoTest()
+        {
+
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(Uri);
+                TestResult = new TestResult()
+                {
+                    Ok = response.StatusCode == HttpStatusCode.OK,
+                    Response = response.Content.ToString()
+                };
+            }
+        }
+           
+
         public EndpointConfiguration TestConfiguration { get; set; }
 
-        public Uri Uri { get; set; }
+        public TestResult TestResult
+        {
+            get;
+            private set;
+        }
     }
 }

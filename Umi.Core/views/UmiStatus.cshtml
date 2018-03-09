@@ -1,4 +1,4 @@
-@model IList<Umi.Core.Endpoint>
+﻿@model IList<Umi.Core.Endpoint>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,12 +7,12 @@
         body {
             background-color: #EFEFEA;
             margin: 0px;
-
         }
-        * {
 
+        * {
             font-family: "Open-Sans", Arial, "Sans-Serif";
         }
+
         header {
             margin: 0px;
             padding: 1% 22%;
@@ -25,7 +25,8 @@
             background-repeat: no-repeat;
             background-position-y: 50%;
             background-position-x: 8%;
-        } 
+        }
+
         article {
             margin: 0px;
             padding: 1% 5%;
@@ -34,9 +35,33 @@
             height: 95%;
             background-color: #FFF;
         }
+
         .endpoint {
             color: #87A9FF;
             font-weight: bold;
+        }
+
+        .left {
+            width: 90%;
+            display: inline-block;
+            margin: 10px 0px;
+        }
+
+        .right {
+            width: 10%;
+        }
+
+        .ok, .nok {
+            border-radius: 10px;
+            background-color: tomato;
+            border-radius: 20px;
+            padding: 6px 8px;
+            color: white;
+        }
+
+        .ok {
+            background-color: #a8e052;
+            padding: 6px 9px;
         }
     </style>
 </head>
@@ -48,38 +73,49 @@
     <article>
         @if (Model.Any())
         {
-        <p>
-            These application Uri's are currently present.
-        </p>
+            <p>
+                These application Uri's are currently present.
+            </p>
 
-        <ul>
-            @foreach (var item in Model)
-            {
-                <li>
-                   <a href="@item.Uri" class="endpoint">@item.Uri</a>
-                   
-                </li>
-            }
-        </ul>
+            <ul>
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <span class="left">
+                            <a href="@item.Uri" class="endpoint" target="_blank">@item.Uri</a>
+                        </span>
+                        <span class="right">
+                            @if (item.TestResult.Ok)
+                            {
+                                <span class="ok">&#10004;</span>
+                            }
+                            else
+                            {
+                                <span class="nok">&#10006;</span>
+                            }
+                        </span>
+                    </li>
+                }
+            </ul>
         }
         else
         {
-        <p>
-            No endpoints registered, to register some please include using Umi.Core and;
-        </p>
-        <ul>
-            <li><pre>"string.with.url".RegisterAsEndpoint()</pre></li>
-            <li><pre>new Uri().RegisterAsEndpoint()</pre></li>
-            <li>
-                <pre>
+            <p>
+                No endpoints registered, to register some please include using Umi.Core and;
+            </p>
+            <ul>
+                <li><pre>"string.with.url".RegisterAsEndpoint()</pre></li>
+                <li><pre>new Uri().RegisterAsEndpoint()</pre></li>
+                <li>
+                    <pre>
                 -- Todo -
                 -app.UseUmi(options =>
                 { 
                     options.ScaffoldWfc = true;
                 });
                 </pre>
-            </li>
-        </ul>
+                </li>
+            </ul>
         }
     </article>
 </body>
