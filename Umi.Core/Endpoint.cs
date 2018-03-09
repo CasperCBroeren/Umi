@@ -14,7 +14,7 @@ namespace Umi.Core
             this.Uri = uri;
             this.TestConfiguration = new EndpointConfiguration()
             {
-                TestAsSuccessStatusCode = HttpStatusCode.Accepted
+                TestAsSuccessStatusCode = HttpStatusCode.OK
             };
             if (configure != null)
             {
@@ -32,7 +32,8 @@ namespace Umi.Core
                 var response = await client.GetAsync(Uri);
                 TestResult = new TestResult()
                 {
-                    Ok = response.StatusCode == HttpStatusCode.OK,
+                    Ok = response.StatusCode == TestConfiguration.TestAsSuccessStatusCode,
+                    StatusCode =  $"[{(int)response.StatusCode}] {response.StatusCode}",
                     Response = response.Content.ToString()
                 };
             }

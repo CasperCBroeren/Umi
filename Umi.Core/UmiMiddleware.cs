@@ -81,7 +81,11 @@ namespace Umi.Core
         public static IApplicationBuilder UseUmi(this IApplicationBuilder builder, Action<UmiMiddlewareOptions> configureOptions = null)
         {
             var options = new UmiMiddlewareOptions();
-            configureOptions(options);
+            if (configureOptions != null)
+            {
+                configureOptions(options);
+            }
+
             return builder.UseMiddleware<UmiMiddleware>(options);
         }
 

@@ -41,6 +41,14 @@
             font-weight: bold;
         }
 
+        li {
+            list-style-type: none;
+        }
+
+        .header {
+
+        }
+
         .left {
             width: 90%;
             display: inline-block;
@@ -73,13 +81,20 @@
     <article>
         @if (Model.Any())
         {
+            var category = "";
             <p>
                 These application Uri's are currently present.
             </p>
 
             <ul>
-                @foreach (var item in Model)
+                @foreach (var item in Model.OrderBy(x=> x.TestConfiguration.Category))
                 {
+                     if (!category.Equals(item.TestConfiguration.Category))
+                     {
+                         category = item.TestConfiguration.Category;
+
+                         <li class="header"><h4>@category</h4></li>
+                     }
                     <li>
                         <span class="left">
                             <a href="@item.Uri" class="endpoint" target="_blank">@item.Uri</a>
@@ -87,11 +102,11 @@
                         <span class="right">
                             @if (item.TestResult.Ok)
                             {
-                                <span class="ok">&#10004;</span>
+                                <span class="ok" title="Status code returned @item.TestResult.StatusCode">&#10004;</span>
                             }
                             else
                             {
-                                <span class="nok">&#10006;</span>
+                                <span class="nok" title="Status code returned @item.TestResult.StatusCode">&#10006;</span>
                             }
                         </span>
                     </li>

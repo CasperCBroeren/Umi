@@ -21,12 +21,12 @@ namespace WebApplication1
         {
             var endpoint1 = "https://www.googleapis.com/youtube/v3/activities".RegisterAsEndpoint(config =>
                 {
-                    config.TestAsSuccessStatusCode = HttpStatusCode.Forbidden;
+                    config.TestAsSuccessStatusCode = HttpStatusCode.BadRequest;
                     config.Category = "YouTube";
                 });
             var endpoint2 = "https://www.googleapis.com/youtube/v2/activities".RegisterAsEndpoint(config =>
             {
-                config.TestAsSuccessStatusCode = HttpStatusCode.Forbidden;
+                config.TestAsSuccessStatusCode = HttpStatusCode.BadRequest;
                 config.Category = "YouTube";
             });
 

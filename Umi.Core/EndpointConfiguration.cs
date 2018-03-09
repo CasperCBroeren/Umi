@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Umi.Core
 {
-   public struct EndpointConfiguration
+   public class EndpointConfiguration
     {
         public Action PreTest { get; set; }
 
