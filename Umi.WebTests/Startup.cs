@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,8 +19,21 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var endpoint3 = "https://www.googleapis.com/youtube/v3/activities".RegisterAsEndpoint();
-            var endpoint2 = "https://www.googleapis.com/youtube/v2/activities".RegisterAsEndpoint();
+            var endpoint1 = "https://www.googleapis.com/youtube/v3/activities".RegisterAsEndpoint(config =>
+                {
+                    config.TestAsSuccessStatusCode = HttpStatusCode.Forbidden;
+                    config.Category = "YouTube";
+                });
+            var endpoint2 = "https://www.googleapis.com/youtube/v2/activities".RegisterAsEndpoint(config =>
+            {
+                config.TestAsSuccessStatusCode = HttpStatusCode.Forbidden;
+                config.Category = "YouTube";
+            });
+
+            var endpoint3 = "http://coincap.io/coins/".RegisterAsEndpoint(config =>
+            { 
+                config.Category = "Crypto";
+            });
             services.AddMvc();
             services.AddUmi();
         }
