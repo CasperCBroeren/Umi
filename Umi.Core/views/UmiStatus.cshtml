@@ -20,7 +20,7 @@
             width: 56%;
             height: 5%;
             color: #338ba4;
-            background-image: url('/umi/assets/logoUmi.png');
+            background-image: url('@ViewBag.LocatorUrl/assets/logoUmi.png');
             background-size: 86px;
             background-repeat: no-repeat;
             background-position-y: 50%;
@@ -45,8 +45,8 @@
             list-style-type: none;
         }
 
-        .header {
-
+        h4 {
+            margin-bottom: 3px;
         }
 
         .left {
@@ -69,7 +69,7 @@
 
         .ok {
             background-color: #a8e052;
-            padding: 6px 9px;
+            padding: 6px 8px;
         }
     </style>
 </head>
@@ -102,11 +102,11 @@
                         <span class="right">
                             @if (item.TestResult.Ok)
                             {
-                                <span class="ok" title="Status code returned @item.TestResult.StatusCode">&#10004;</span>
+                                <span class="ok" title="Status code returned @item.TestResult.StatusCode (@((int)item.TestResult.StatusCode))">&#10004;</span>
                             }
                             else
                             {
-                                <span class="nok" title="Status code returned @item.TestResult.StatusCode">&#10006;</span>
+                                <span class="nok" title="Status code returned @item.TestResult.StatusCode and should been @item.TestConfiguration.TestAsSuccessStatusCode">&#10006;</span>
                             }
                         </span>
                     </li>
@@ -123,11 +123,8 @@
                 <li><pre>new Uri().RegisterAsEndpoint()</pre></li>
                 <li>
                     <pre>
-                -- Todo -
-                -app.UseUmi(options =>
-                { 
-                    options.ScaffoldWfc = true;
-                });
+                    // In the Startup.Configure 
+                    app.UseUmi();
                 </pre>
                 </li>
             </ul>

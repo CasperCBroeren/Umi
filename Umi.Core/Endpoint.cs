@@ -30,13 +30,23 @@ namespace Umi.Core
 
             using (var client = new HttpClient())
             {
-                var response = await client.GetAsync(Uri);
+                var request = new HttpRequestMessage(HttpMethod.Get, Uri);
+                if (TestConfiguration.PreTest !=null)
+                {
+                    TestConfiguration.PreTest.Invoke(request);
+                }
+
+                var response = await client.SendAsync(request);
                 TestResult = new TestResult()
                 {
                     Ok = response.StatusCode == TestConfiguration.TestAsSuccessStatusCode,
-                    StatusCode =  $"[{(int)response.StatusCode}] {response.StatusCode}",
+                    StatusCode = response.StatusCode,
                     Response = response.Content.ToString()
                 };
+                if (TestConfiguration.PostTest != null)
+                {
+                    TestConfiguration.PostTest.Invoke( response, TestResult);
+                }
             }
         }
            

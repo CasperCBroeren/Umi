@@ -40,7 +40,7 @@ namespace Umi.Core
                     var allItems = await EndpointManager.All();
                     httpContext.Response.ContentType = "application/json";
                     // worst json serialiser ever
-                    await httpContext.Response.WriteAsync($@"{{ ""urls"": [{string.Join(",", allItems.Select(x=> $@"{{ ""uri"": ""{x.Uri}"", ""ok"": {x.TestResult.Ok.ToString().ToLower()}}}"))}]}}"); 
+                    await httpContext.Response.WriteAsync($@"{{ ""urls"": [{string.Join(",", allItems.Select(x=> $@"{{ ""uri"": ""{x.Uri}"", ""ok"": {x.TestResult.Ok.ToString().ToLower()}, ""tested"": {(int)x.TestResult.StatusCode}, ""testTo"": {(int)x.TestConfiguration.TestAsSuccessStatusCode}, ""category"": '{x.TestConfiguration.Category}'}}"))}]}}"); 
                 }
                 else if (url.StartsWithSegments(options.LocatorAssetUrl))
                 {
@@ -56,7 +56,7 @@ namespace Umi.Core
                 else
                 {
                     var allItems = await EndpointManager.All();
-                    var content = await this.viewRenderService.RenderToStringAsync("~/views/UmiStatus.cshtml", allItems);
+                    var content = await this.viewRenderService.RenderToStringAsync("~/views/UmiStatus.cshtml", allItems, options.LocatorUrl);
                     await httpContext.Response.WriteAsync(content);
                 }
 

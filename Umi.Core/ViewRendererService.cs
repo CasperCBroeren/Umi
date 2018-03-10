@@ -17,7 +17,7 @@ namespace Umi.Core
 {
     public interface IViewRenderService
     {
-        Task<string> RenderToStringAsync(string viewName, object model);
+        Task<string> RenderToStringAsync(string viewName, object model, string locatorUrl);
     }
  
     public class ViewRenderService : IViewRenderService
@@ -39,7 +39,7 @@ namespace Umi.Core
 
         public IHttpContextAccessor httpContextAccessor { get; }
 
-        public async Task<string> RenderToStringAsync(string viewName, object model)
+        public async Task<string> RenderToStringAsync(string viewName, object model, string locatorUrl)
         {
             var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
             var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
@@ -53,14 +53,15 @@ namespace Umi.Core
                 {
                     throw new ArgumentNullException($"{viewName} does not match any available view");
                 }
-  
+                
                 var viewContext = new ViewContext()
                 {
                     HttpContext = httpContextAccessor.HttpContext ?? new DefaultHttpContext { RequestServices = _serviceProvider },
                     ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) { Model = model },
                     Writer = sw
                 };
- 
+                viewContext.ViewBag.LocatorUrl = locatorUrl;
+
                 await viewResult.View.RenderAsync(viewContext);
                 return sw.ToString();
             }

@@ -5,8 +5,7 @@ namespace Umi.Core
     public class UmiMiddlewareOptions
     {
         private string locatorUrl = "/umi";
-        public string LocatorUrl { get { return locatorUrl; } set { locatorUrl = (value.StartsWith("/") ? value : "/" + value); } }
-        public bool ScaffoldWfc { get; set; } = false;
+        public string LocatorUrl { get { return locatorUrl; } set { locatorUrl = (value.StartsWith("/") ? value : "/" + value); } } 
         public PathString LocatorAssetUrl => $"{LocatorUrl}/assets";
     }
 }

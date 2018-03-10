@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 
 namespace Umi.Core
 {
     public class EndpointConfiguration
     {
-        public Action PreTest { get; set; }
+        public Action<HttpRequestMessage> PreTest { get; set; }
 
-        public Action PostTest { get; set; }
+        public Action<HttpResponseMessage, TestResult>  PostTest { get; set; }
 
         private string category;
         public string Category

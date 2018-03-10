@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,9 +26,15 @@ namespace WebApplication1
                     config.Category = "YouTube";
                 });
             var endpoint2 = "https://www.googleapis.com/youtube/v2/activities".RegisterAsEndpoint(config =>
-            {
-                config.TestAsSuccessStatusCode = HttpStatusCode.BadRequest;
+            { 
                 config.Category = "YouTube";
+                config.PreTest = (request) => {
+                    request.Method = HttpMethod.Post;
+                };
+                config.PostTest = (response, result) =>
+                {
+                    result.Ok = response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.Continue;
+                };
             });
 
             var endpoint3 = "http://coincap.io/coins/".RegisterAsEndpoint(config =>
@@ -56,8 +63,7 @@ namespace WebApplication1
             app.UseStaticFiles();
             app.UseUmi(options =>
             {
-                options.LocatorUrl = "umi";
-                options.ScaffoldWfc = false;
+                options.LocatorUrl = "/api/umi"; 
             });
             app.UseMvc();
         }
