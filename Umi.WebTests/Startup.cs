@@ -34,6 +34,8 @@ namespace WebApplication1
             { 
                 config.Category = "Crypto";
             });
+            var endpoint4 = "https://restcountries.eu/rest/v2/currency/eur".RegisterAsEndpoint();
+
             services.AddMvc();
             services.AddUmi();
         }

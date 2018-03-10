@@ -14,7 +14,8 @@ namespace Umi.Core
             this.Uri = uri;
             this.TestConfiguration = new EndpointConfiguration()
             {
-                TestAsSuccessStatusCode = HttpStatusCode.OK
+                TestAsSuccessStatusCode = HttpStatusCode.OK,
+                Category = string.Empty
             };
             if (configure != null)
             {
