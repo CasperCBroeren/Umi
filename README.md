@@ -22,7 +22,7 @@ app.UseUmi(options =>
 Second register your strings or Uri's which are endpoint like this
 
  ```csharp
- var endpoint1 = "https://restcountries.eu/rest/v2/currency/eur".RegisterAsEndpoint();
+ var endpoint1 = new Uri("https://restcountries.eu/rest/v2/currency/eur").RegisterAsEndpoint();
 ```
 More eleborate example where we adjust the expected error code and give a category to our endpoint
  ```csharp
