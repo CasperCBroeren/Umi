@@ -7,7 +7,7 @@ Umi has an status page which serves html or JSON. This is handy for manual check
 
 Umi is a Japanese girl name, meaning sea ;)
 
-[alt Umi status page](https://raw.githubusercontent.com/CasperCBroeren/Umi/master/screenshot1.png)
+![alt Umi status page](https://raw.githubusercontent.com/CasperCBroeren/Umi/master/screenshot1.png)
 
 ### Use
 First register the endpoint where the option LocatorUrl is optional incase you don't want the route at /umi
@@ -22,7 +22,7 @@ app.UseUmi(options =>
 Second register your strings or Uri's which are endpoint like this
 
  ```csharp
- var endpoint1 = "https://restcountries.eu/rest/v2/currency/eur".RegisterAsEndpoint();
+ var endpoint1 = new Uri("https://restcountries.eu/rest/v2/currency/eur").RegisterAsEndpoint();
 ```
 More eleborate example where we adjust the expected error code and give a category to our endpoint
  ```csharp
@@ -47,7 +47,7 @@ Full example where we adjust also the request before sending and alter the OK af
                 };
             });
  ```
-###Roadmap
+### Roadmap
 - ✓ Get overview page to work in Core (html and json)
 - ✓ Test method
 - Nuget package
