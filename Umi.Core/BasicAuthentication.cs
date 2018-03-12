@@ -16,7 +16,7 @@ namespace Umi.Core
         public string Password { get; }
         public string User { get; }
 
-        public string AsToken => Convert.ToBase64String(Encoding.Unicode.GetBytes($"{User}:{Password}"));
+        public string AsToken => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{User}:{Password}"));
 
     }
 }

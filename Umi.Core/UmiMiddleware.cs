@@ -62,7 +62,8 @@ namespace Umi.Core
                 }
                 else
                 {
-                    httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    httpContext.Response.Headers["WWW-Authenticate"] = @"Basic realm=""/umi"" charset=""UTF-8""";
                 }
             }
             else
