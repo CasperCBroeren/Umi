@@ -7,6 +7,7 @@ using Microsoft.Extensions.FileProviders;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -34,37 +35,45 @@ namespace Umi.Core
             var url = httpContext.Request.Path;
             if (url.StartsWithSegments(options.LocatorUrl))
             {
-               
-                if (IsJsonRequest(httpContext))
+                if (!options.AuthenticationEnabled || Authenticated(options, httpContext.Request))
                 {
-                    var allItems = await EndpointManager.All();
-                    httpContext.Response.ContentType = "application/json";
-                    // worst json serialiser ever
-                    await httpContext.Response.WriteAsync($@"{{ ""urls"": [{string.Join(",", allItems.Select(x=> $@"{{ ""uri"": ""{x.Uri}"", ""ok"": {x.TestResult.Ok.ToString().ToLower()}, ""tested"": {(int)x.TestResult.StatusCode}, ""testTo"": {(int)x.TestConfiguration.TestAsSuccessStatusCode}, ""category"": '{x.TestConfiguration.Category}'}}"))}]}}"); 
-                }
-                else if (url.StartsWithSegments(options.LocatorAssetUrl))
-                {
-                    var assetName = url.ToString().Replace($"{options.LocatorAssetUrl}/", string.Empty);
-
-                    using (var assetStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"Umi.Core.assets.{assetName}"))
+                    if (IsJsonRequest(httpContext))
                     {
-                        await assetStream.CopyToAsync(httpContext.Response.Body);
+                        var allItems = await EndpointManager.All();
+                        httpContext.Response.ContentType = "application/json";
+                        // worst json serialiser ever
+                        await httpContext.Response.WriteAsync($@"{{ ""urls"": [{string.Join(",", allItems.Select(x => $@"{{ ""uri"": ""{x.Uri}"", ""ok"": {x.TestResult.Ok.ToString().ToLower()}, ""tested"": {(int)x.TestResult.StatusCode}, ""testTo"": {(int)x.TestConfiguration.TestAsSuccessStatusCode}, ""category"": '{x.TestConfiguration.Category}'}}"))}]}}");
                     }
+                    else if (url.StartsWithSegments(options.LocatorAssetUrl))
+                    {
+                        var assetName = url.ToString().Replace($"{options.LocatorAssetUrl}/", string.Empty);
 
-
+                        using (var assetStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"Umi.Core.assets.{assetName}"))
+                        {
+                            await assetStream.CopyToAsync(httpContext.Response.Body);
+                        } 
+                    }
+                    else
+                    {
+                        var allItems = await EndpointManager.All();
+                        var content = await this.viewRenderService.RenderToStringAsync("~/views/UmiStatus.cshtml", allItems, options.LocatorUrl);
+                        await httpContext.Response.WriteAsync(content);
+                    }
                 }
                 else
                 {
-                    var allItems = await EndpointManager.All();
-                    var content = await this.viewRenderService.RenderToStringAsync("~/views/UmiStatus.cshtml", allItems, options.LocatorUrl);
-                    await httpContext.Response.WriteAsync(content);
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 }
-
             }
             else
             {
                 await this.next(httpContext);
             }
+        }
+
+        private bool Authenticated(UmiMiddlewareOptions options, HttpRequest request)
+        {
+            return request.Headers["Authorization"].Equals($"Basic {options.Authentication.AsToken}");
         }
 
         private static bool IsJsonRequest(HttpContext httpContext)
