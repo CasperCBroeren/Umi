@@ -1,5 +1,7 @@
 ﻿![alt Umi logo](https://raw.githubusercontent.com/CasperCBroeren/Umi/master/Umi.Core/assets/logoUmi.png)
 
+[![NuGet](https://img.shields.io/badge/Umi.Core-First%20release-green.svg)](https://www.nuget.org/packages/Umi.Core/1.0.0)
+
 Because in application development your collection of urls can feel like a sea of Uri's which are not easily testable, I invented an endpoint manager called Umi.
 
 Umi is a lightweight approach for using urls in your application but register them collectively so they can be tested and retrieved with ease. 
