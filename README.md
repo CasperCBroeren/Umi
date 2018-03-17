@@ -11,7 +11,7 @@ Umi is a Japanese girl name, meaning sea ;)
 ![alt Umi status page](https://raw.githubusercontent.com/CasperCBroeren/Umi/master/screenshot1.png)
 
 ### Use
-First register the endpoint where the option LocatorUrl is optional incase you don't want the route at /umi
+First register the endpoint where the option LocatorUrl is optional incase you don't want the route at /umi. Also the authentication is optional but please make use of it anyway you like.
 
 ```csharp
 app.UseUmi(options =>
