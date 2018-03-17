@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Authors>Casper C Broeren</Authors>
+    <Company />
+    <Product>Umi</Product>
+    <Description>Endpoint management made easy. Register an endpoint and manage it by the endpoint by /umi</Description>
+    <PackageProjectUrl>https://github.com/CasperCBroeren/Umi</PackageProjectUrl>
+    <PackageReleaseNotes />
+    <PackageIconUrl>https://raw.githubusercontent.com/CasperCBroeren/Umi/master/Umi.Core/assets/logoUmi.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/CasperCBroeren/Umi</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,9 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.0.1" />
   </ItemGroup>
 
 </Project>
