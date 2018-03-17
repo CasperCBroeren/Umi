@@ -52,6 +52,6 @@ Full example where we adjust also the request before sending and alter the OK af
 ### Roadmap
 - ✓ Get overview page to work in Core (html and json)
 - ✓ Test method
-- Nuget package
-- Authentication on the status page 
+- ✓ Nuget package
+- ✓ Authentication on the status page 
 - .Net Standard variant
