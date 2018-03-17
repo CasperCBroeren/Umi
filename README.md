@@ -2,10 +2,9 @@
 
 [![NuGet](https://img.shields.io/badge/Umi.Core-First%20release-green.svg)](https://www.nuget.org/packages/Umi.Core/1.0.0)
 
-Because in application development your collection of urls can feel like a sea of Uri's which are not easily testable, I invented an endpoint manager called Umi.
+Because in application development your collection of outgoing urls can feel like a sea of uri's. These Urls aren't easily testable, so then Umi got invented, which is an endpoint manager. Or to put it different; it's like swagger but then for the url's that the application uses. 
 
-Umi is a lightweight approach for using urls in your application but register them collectively so they can be tested and retrieved with ease. 
-Umi has an status page which serves html or JSON. This is handy for manual checks or alerting purposes.
+Umi is a lightweight approach for using urls in your application but register them collectively so they can be tested and retrieved with ease. Umi has an status page which serves html or JSON. This is handy for manual checks or alerting purposes.  Your (dev)ops will love it.
 
 Umi is a Japanese girl name, meaning sea ;)
 
@@ -18,6 +17,7 @@ First register the endpoint where the option LocatorUrl is optional incase you d
 app.UseUmi(options =>
             {
                 options.LocatorUrl = "/umi"; 
+                options.Authentication =  new BasicAuthentication("aladin", "opensesame");
             });
 ```
 
