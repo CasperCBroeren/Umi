@@ -17,11 +17,11 @@ namespace Umi.Core
             return false;
         }
 
-        public static async Task<IList<Endpoint>> All()
+        public static async Task<IList<Endpoint>> All(IHttpClient client)
         {
             foreach (var item in points)
             {
-                await item.DoTest();
+                await item.DoTest(client);
             }
             return points;
         }

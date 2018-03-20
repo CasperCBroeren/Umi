@@ -19,10 +19,10 @@ namespace Umi.Tests
         [TestInitialize]
         public void Setup()
         {
-           
-            jsonOutputer = new Moq.Mock<JsonOutputer>();
+            var httpClientMock = new Mock<IHttpClient>();
+            jsonOutputer = new Moq.Mock<JsonOutputer>(httpClientMock.Object);
             jsonOutputer.Setup(x => x.WriteOutput(It.IsAny<HttpContext>())).Returns(Task.CompletedTask).Verifiable();
-            htmlOutputer = new Moq.Mock<HtmlOutputer>(null);
+            htmlOutputer = new Moq.Mock<HtmlOutputer>( null, httpClientMock.Object);
             htmlOutputer.Setup(x => x.WriteOutput(It.IsAny<HttpContext>())).Returns(Task.CompletedTask).Verifiable();
             assetOutputer = new Moq.Mock<AssetOutputer>();
             assetOutputer.Setup(x => x.WriteOutput(It.IsAny<HttpContext>())).Returns(Task.CompletedTask).Verifiable();

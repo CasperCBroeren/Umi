@@ -1,9 +1,10 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Umi.Core
 {
     public interface IHttpClient
     {
-        HttpResponseMessage DoRequest(string url);
+        Task<HttpResponseMessage> SendAsync(HttpRequestMessage request); 
     }
 }

@@ -64,7 +64,8 @@ namespace WebApplication1
             app.UseStaticFiles();
             app.UseUmi(options =>
             {
-                options.LocatorUrl = "/api/umi"; 
+                options.LocatorUrl = "/api/umi";
+                options.Authentication = new BasicAuthentication("test", "test");
             });
             app.UseMvc();
         }

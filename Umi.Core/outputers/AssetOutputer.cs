@@ -7,7 +7,7 @@ namespace Umi.Core.Outputer
     public class AssetOutputer : IOutputer
     { 
         private UmiMiddlewareOptions options;
-
+    
         public void SetOptions(UmiMiddlewareOptions options)
         {
             this.options = options;

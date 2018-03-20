@@ -19,6 +19,7 @@ namespace Umi.Core
                 options.FileProviders.Add(fileProvider);
             });
 
+            serviceCollection.AddSingleton<IHttpClient, BasicHttpClient>();
             serviceCollection.AddSingleton<IViewRenderService, ViewRenderService>();
             serviceCollection.AddSingleton<AssetOutputer>();
             serviceCollection.AddSingleton<HtmlOutputer>();

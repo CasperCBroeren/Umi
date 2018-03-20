@@ -11,7 +11,8 @@ namespace Umi.Core
         private readonly UmiMiddlewareOptions options;
         private readonly IOutputer jsonOutputer;
         private readonly IOutputer htmlOutputer;
-        private readonly IOutputer assetOutputer;
+        private readonly IOutputer assetOutputer; 
+        private readonly IHttpClient httpClient;
 
         public UmiMiddleware(RequestDelegate next, 
                             UmiMiddlewareOptions options,
@@ -25,7 +26,7 @@ namespace Umi.Core
             this.jsonOutputer.SetOptions(this.options);
             this.htmlOutputer = htmlOutputer;
             this.htmlOutputer.SetOptions(this.options);
-            this.assetOutputer = assetOutputer;
+            this.assetOutputer = assetOutputer; 
             this.htmlOutputer.SetOptions(this.options);
         }
 

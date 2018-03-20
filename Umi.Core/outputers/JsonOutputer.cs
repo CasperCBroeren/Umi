@@ -9,6 +9,14 @@ namespace Umi.Core.Outputer
     {
         private UmiMiddlewareOptions options;
 
+        private readonly IHttpClient httpClient;
+
+        public JsonOutputer(IHttpClient httpClient)
+        {
+            this.httpClient = httpClient;
+        }
+
+
         public void SetOptions(UmiMiddlewareOptions options)
         {
             this.options = options;
@@ -16,7 +24,7 @@ namespace Umi.Core.Outputer
 
         public virtual async Task WriteOutput(HttpContext httpContext)
         {
-            var allItems = await EndpointManager.All();
+            var allItems = await EndpointManager.All(this.httpClient);
             httpContext.Response.ContentType = "application/json";
             // worst json serialiser ever
             await httpContext.Response.WriteAsync($@"{{ ""urls"": [{string.Join(",", allItems.Select(x => $@"{{ ""uri"": {StringOrNull(x.Uri)}, ""ok"": {x.TestResult.Ok.ToString().ToLower()}, ""tested"": {(int)x.TestResult.StatusCode}, ""testTo"": {(int)x.TestConfiguration.TestAsSuccessStatusCode}, ""category"": {StringOrNull(x.TestConfiguration.Category)}}}"))}]}}");
