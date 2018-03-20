@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Umi.Core;
+using Umi.Core.Authentication;
 
 namespace WebApplication1
 {
@@ -63,8 +64,7 @@ namespace WebApplication1
             app.UseStaticFiles();
             app.UseUmi(options =>
             {
-                options.LocatorUrl = "/api/umi";
-                options.Authentication =  new BasicAuthentication("aladin", "opensesame");
+                options.LocatorUrl = "/api/umi"; 
             });
             app.UseMvc();
         }

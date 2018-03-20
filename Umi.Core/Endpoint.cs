@@ -17,36 +17,45 @@ namespace Umi.Core
                 TestAsSuccessStatusCode = HttpStatusCode.OK,
                 Category = string.Empty
             };
-            if (configure != null)
-            {
-                configure(this.TestConfiguration);
-            }
+
+            configure?.Invoke(this.TestConfiguration);
         }
 
         public Uri Uri { get; set; }
 
         public async Task DoTest()
         {
-
-            using (var client = new HttpClient())
+            try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, Uri);
-                if (TestConfiguration.PreTest !=null)
+                using (var client = new HttpClient())
                 {
-                    TestConfiguration.PreTest.Invoke(request);
-                }
+                    var request = new HttpRequestMessage(HttpMethod.Get, Uri);
+                    if (TestConfiguration.PreTest != null)
+                    {
+                        TestConfiguration.PreTest.Invoke(request);
+                    }
 
-                var response = await client.SendAsync(request);
+                    var response = await client.SendAsync(request);
+                    TestResult = new TestResult()
+                    {
+                        Ok = response.StatusCode == TestConfiguration.TestAsSuccessStatusCode,
+                        StatusCode = response.StatusCode,
+                        Response = response.Content.ToString()
+                    };
+                    if (TestConfiguration.PostTest != null)
+                    {
+                        TestConfiguration.PostTest.Invoke(response, TestResult);
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
                 TestResult = new TestResult()
                 {
-                    Ok = response.StatusCode == TestConfiguration.TestAsSuccessStatusCode,
-                    StatusCode = response.StatusCode,
-                    Response = response.Content.ToString()
+                    Ok = false,
+                    StatusCode = HttpStatusCode.SeeOther,
+                    Response = exc.Message
                 };
-                if (TestConfiguration.PostTest != null)
-                {
-                    TestConfiguration.PostTest.Invoke( response, TestResult);
-                }
             }
         }
            

@@ -1,15 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using System;
-using System.IO;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Http; 
 using System.Net;
-using System.Reflection;
 using System.Threading.Tasks;
+using Umi.Core.Outputer;
 
 namespace Umi.Core
 {
@@ -17,17 +9,24 @@ namespace Umi.Core
     {
         private readonly RequestDelegate next;
         private readonly UmiMiddlewareOptions options;
-        private readonly IViewRenderService viewRenderService;
-        private readonly ITempDataProvider tempDataProvider;
-        private readonly IRazorViewEngine razorViewEngine;
-        private Stream template;
+        private readonly IOutputer jsonOutputer;
+        private readonly IOutputer htmlOutputer;
+        private readonly IOutputer assetOutputer;
 
-        public UmiMiddleware(RequestDelegate next, UmiMiddlewareOptions options,
-            IViewRenderService viewRenderService, ITempDataProvider tempDataProvider, IRazorViewEngine razorViewEngine)
+        public UmiMiddleware(RequestDelegate next, 
+                            UmiMiddlewareOptions options,
+                            JsonOutputer jsonOutputer,
+                            HtmlOutputer htmlOutputer,
+                            AssetOutputer assetOutputer)
         {
             this.next = next;
-            this.options = options;
-            this.viewRenderService = viewRenderService;
+            this.options = options; 
+            this.jsonOutputer = jsonOutputer;
+            this.jsonOutputer.SetOptions(this.options);
+            this.htmlOutputer = htmlOutputer;
+            this.htmlOutputer.SetOptions(this.options);
+            this.assetOutputer = assetOutputer;
+            this.htmlOutputer.SetOptions(this.options);
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -35,47 +34,46 @@ namespace Umi.Core
             var url = httpContext.Request.Path;
             if (url.StartsWithSegments(options.LocatorUrl))
             {
-                if (!options.AuthenticationEnabled || Authenticated(options, httpContext.Request))
+                if (!options.AuthenticationEnabled || options.Authentication.IsAuthenticated(httpContext.Request))
                 {
                     if (IsJsonRequest(httpContext))
                     {
-                        var allItems = await EndpointManager.All();
-                        httpContext.Response.ContentType = "application/json";
-                        // worst json serialiser ever
-                        await httpContext.Response.WriteAsync($@"{{ ""urls"": [{string.Join(",", allItems.Select(x => $@"{{ ""uri"": ""{x.Uri}"", ""ok"": {x.TestResult.Ok.ToString().ToLower()}, ""tested"": {(int)x.TestResult.StatusCode}, ""testTo"": {(int)x.TestConfiguration.TestAsSuccessStatusCode}, ""category"": '{x.TestConfiguration.Category}'}}"))}]}}");
+                        await this.jsonOutputer.WriteOutput(httpContext);
                     }
                     else if (url.StartsWithSegments(options.LocatorAssetUrl))
                     {
-                        var assetName = url.ToString().Replace($"{options.LocatorAssetUrl}/", string.Empty);
-
-                        using (var assetStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"Umi.Core.assets.{assetName}"))
-                        {
-                            await assetStream.CopyToAsync(httpContext.Response.Body);
-                        } 
+                        await this.assetOutputer.WriteOutput(httpContext);
                     }
                     else
                     {
-                        var allItems = await EndpointManager.All();
-                        var content = await this.viewRenderService.RenderToStringAsync("~/views/UmiStatus.cshtml", allItems, options.LocatorUrl);
-                        await httpContext.Response.WriteAsync(content);
+                        await this.htmlOutputer.WriteOutput(httpContext);
                     }
                 }
                 else
                 {
-                    httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    httpContext.Response.Headers["WWW-Authenticate"] = @"Basic realm=""/umi"" charset=""UTF-8""";
+                    if (options.AuthenticationEnabled)
+                    {
+                        if (!options.Authentication.IsAuthenticated(httpContext.Request) && !options.Authentication.TriesToAuthenticate(httpContext.Request))
+                        {
+                            httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                            httpContext.Response.Headers["WWW-Authenticate"] = @"Basic realm=""/umi"" charset=""UTF-8""";
+                        }
+                        else
+                        {
+                            httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        }
+                    }                    
                 }
             }
             else
             {
-                await this.next(httpContext);
+                if (this.next != null)
+                {
+                    await this.next(httpContext);
+                }
             }
         }
-
-        private bool Authenticated(UmiMiddlewareOptions options, HttpRequest request)
-        {
-            return request.Headers["Authorization"].Equals($"Basic {options.Authentication.AsToken}");
-        }
+         
 
         private static bool IsJsonRequest(HttpContext httpContext)
         {
@@ -83,38 +81,6 @@ namespace Umi.Core
                 httpContext.Request.Headers["accept"] == "text/javascript";
 
         }
-    }
-
-    public static class UmiMiddlewareExtentions
-    {
-
-        public static IApplicationBuilder UseUmi(this IApplicationBuilder builder, Action<UmiMiddlewareOptions> configureOptions = null)
-        {
-            var options = new UmiMiddlewareOptions();
-            if (configureOptions != null)
-            {
-                configureOptions(options);
-            }
-
-            return builder.UseMiddleware<UmiMiddleware>(options);
-        }
-
-        public static void AddUmi(this IServiceCollection serviceCollection)
-        {
-            // Add the embedded file provider
-            var viewAssembly = typeof(UmiMiddleware).Assembly;
-            var fileProvider = new EmbeddedFileProvider(viewAssembly);
-            serviceCollection.Configure<RazorViewEngineOptions>(options =>
-            {
-                options.FileProviders.Add(fileProvider);
-            });
-
-            serviceCollection.AddSingleton<IViewRenderService, ViewRenderService>();
-
-
-        }
-    }
-
-
+    } 
 }
 

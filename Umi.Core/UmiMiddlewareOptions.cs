@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Umi.Core.Authentication;
 
 namespace Umi.Core
 {
@@ -8,7 +9,7 @@ namespace Umi.Core
         public string LocatorUrl { get { return locatorUrl; } set { locatorUrl = (value.StartsWith("/") ? value : "/" + value); } } 
         public PathString LocatorAssetUrl => $"{LocatorUrl}/assets";
 
-        public BasicAuthentication Authentication { get; set; }
+        public IAuthentication Authentication { get; set; }
         public bool AuthenticationEnabled { get { return Authentication != null; } }
     }
 }
