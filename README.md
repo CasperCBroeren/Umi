@@ -1,6 +1,6 @@
 ﻿![alt Umi logo](https://raw.githubusercontent.com/CasperCBroeren/Umi/master/Umi.Core/assets/logoUmi.png)
 
-[![NuGet](https://img.shields.io/badge/Umi.Core-First%20release-green.svg)](https://www.nuget.org/packages/Umi.Core/1.0.0)
+[![NuGet](https://img.shields.io/badge/Umi.Core-v1.0.2-green.svg)](https://www.nuget.org/packages/Umi.Core/1.0.2)
 
 Because in application development your collection of outgoing urls can feel like a sea of uri's. These Urls aren't easily testable, so then Umi got invented, which is an endpoint manager. Or to put it different; it's like swagger but then for the url's that the application uses. 
 
