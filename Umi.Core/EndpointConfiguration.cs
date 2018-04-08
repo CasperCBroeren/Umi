@@ -10,7 +10,7 @@ namespace Umi.Core
 
         public Action<HttpResponseMessage, TestResult>  PostTest { get; set; }
 
-        private string category;
+        private string category = Default;
         public string Category
         {
             get
@@ -19,10 +19,11 @@ namespace Umi.Core
             }
             set
             {
-                category = (value == null) ? string.Empty : value;
+                category = (value == null) ? Default : value;
             }
         }
 
         public HttpStatusCode TestAsSuccessStatusCode { get; set; }
+        const string Default = "General";
     }
 }

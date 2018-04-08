@@ -27,7 +27,7 @@ namespace Umi.Core
             this.htmlOutputer = htmlOutputer;
             this.htmlOutputer.SetOptions(this.options);
             this.assetOutputer = assetOutputer; 
-            this.htmlOutputer.SetOptions(this.options);
+            this.assetOutputer.SetOptions(this.options);
         }
 
         public async Task Invoke(HttpContext httpContext)

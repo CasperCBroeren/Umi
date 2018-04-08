@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Umi</title>
+    <title>Umi - status page</title>
     <style>
         body {
             background-color: #EFEFEA;
@@ -10,21 +10,19 @@
         }
 
         * {
-            font-family: "Open-Sans", Arial, "Sans-Serif";
+            font-family: Consolas, monaco, monospace;
         }
 
         header {
             margin: 0px;
             padding: 1% 22%;
-            background-color: #c0e4f1;
             width: 56%;
-            height: 5%;
+            height: 80px;
             color: #338ba4;
             background-image: url('@ViewBag.LocatorUrl/assets/logoUmi.png');
             background-size: 86px;
             background-repeat: no-repeat;
-            background-position-y: 50%;
-            background-position-x: 8%;
+            background-position: center;
         }
 
         article {
@@ -40,73 +38,78 @@
             color: #87A9FF;
             font-weight: bold;
         }
-
+        ul {
+            padding-left: 0px;
+        }
         li {
             list-style-type: none;
+            background-image: url('@ViewBag.LocatorUrl/assets/dot.png');
+            background-repeat: repeat-x;
+            background-position: 6px;
         }
-
+        li.header {
+         background-image: none;
+        }
         h4 {
-            margin-bottom: 3px;
+            margin-bottom: 0px;
         }
 
         .left {
-            width: 90%;
+            width:95%;
             display: inline-block;
-            margin: 10px 0px;
+            margin: 3px 0px;
         }
 
-        .right {
-            width: 10%;
+         .right {
+            
+            display: inline-block;
+            margin: 3px 0px;
+            float: right;
+
         }
 
-        .ok, .nok {
-            border-radius: 10px;
-            background-color: tomato;
-            border-radius: 20px;
-            padding: 6px 8px;
-            color: white;
+        .left a, .right abbr {
+            background-color: white;
         }
 
-        .ok {
-            background-color: #a8e052;
-            padding: 6px 8px;
+
+        .nok {
+            color: tomato;
+
         }
+
     </style>
 </head>
 <body>
-    <header>
-        <h1>Status page</h1>
-
-    </header>
     <article>
+        <header> </header>
         @if (Model.Any())
         {
             var category = "";
             <p>
-                These application Uri's are currently present.
+                These application Uri's are currently present and checked;
             </p>
 
             <ul>
-                @foreach (var item in Model.OrderBy(x=> x.TestConfiguration.Category))
+                @foreach (var item in Model.OrderBy(x => x.TestConfiguration.Category))
                 {
-                     if (!category.Equals(item.TestConfiguration.Category))
-                     {
-                         category = item.TestConfiguration.Category;
+                    if (!category.Equals(item.TestConfiguration.Category))
+                    {
+                        category = item.TestConfiguration.Category;
+                        <li class="header"><h4>@category</h4></li>
+                    }
 
-                         <li class="header"><h4>@category</h4></li>
-                     }
                     <li>
                         <span class="left">
-                            <a href="@item.Uri" class="endpoint" target="_blank">@item.Uri</a>
-                        </span>
-                        <span class="right">
+                            <a href="@item.Uri" class="endpoint @(!item.TestResult.Ok ? "nok": null)" target="_blank">@item.Uri</a>
+                        </span><span class="right">   
                             @if (item.TestResult.Ok)
                             {
-                                <span class="ok" title="Status code returned @item.TestResult.StatusCode (@((int)item.TestResult.StatusCode))">&#10004;</span>
+                                <abbr title="Status code returned @item.TestResult.StatusCode (@((int)item.TestResult.StatusCode))">OK</abbr>
                             }
                             else
                             {
-                                <span class="nok" title="Status code returned @item.TestResult.StatusCode and should been @item.TestConfiguration.TestAsSuccessStatusCode">&#10006;</span>
+                                <abbr class="nok" title="Status code returned @item.TestResult.StatusCode and should been @item.TestConfiguration.TestAsSuccessStatusCode">NOK</abbr>
                             }
                         </span>
                     </li>

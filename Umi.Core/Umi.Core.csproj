@@ -7,16 +7,20 @@
     <Product>Umi</Product>
     <Description>Endpoint management made easy. Register an endpoint and manage it by the endpoint by /umi</Description>
     <PackageProjectUrl>https://github.com/CasperCBroeren/Umi</PackageProjectUrl>
-    <PackageReleaseNotes />
+    <PackageReleaseNotes>New status pagestyle and logo bug fix</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/CasperCBroeren/Umi/master/Umi.Core/assets/logoUmi.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/CasperCBroeren/Umi</RepositoryUrl>
+    <Version>1.0.2</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\dot.png" />
     <None Remove="assets\logoUmi.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="assets\dot.png" />
     <EmbeddedResource Include="assets\logoUmi.png" />
     <EmbeddedResource Include="views\UmiStatus.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
